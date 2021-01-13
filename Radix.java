@@ -8,6 +8,7 @@ public class Radix {
      }
 
      public static int length (int n) {
+          if (n==0) return 1;
           return (int) Math.log10(Math.abs(n)) + 1;
      }
 
@@ -18,42 +19,30 @@ public class Radix {
      }
 
      public static void radixSortSimple(SortableLinkedList data) {
-          boolean cont = true;
-          int digit = 0;
+          int passes = 0;
           SortableLinkedList buckets[] = new SortableLinkedList[10];
-          for (int i = 0; i < 10; i++) {
-               buckets[i] = new SortableLinkedList();
+          for (int i = 0; i < 10; i++) buckets[i] = new SortableLinkedList();
+          for (int i = 0; i < data.size(); i++) {
+               passes = Math.max(passes, length(data.get(0)));
+               data.add(data.remove(0));
           }
-          int c, bucket;
-          while (cont) {
-               cont = false;
-               while (data.size()>0) {
-                    c = data.remove(0);
-                    buckets[nth(c, digit)].add(c);
-                    if (length(c) > digit+1) cont=true;
-               }
+          for (int digit = 0; digit < passes; digit++) {
+               while (data.size()>0) buckets[nth(data.get(0), digit)].add(data.remove(0));
                merge(data, buckets);
-               digit++;
           }
      }
 
      public static void radixSort(SortableLinkedList data) {
-          boolean cont = true;
-          int digit = 0;
+          int passes = 0;
           SortableLinkedList buckets[] = new SortableLinkedList[19];
-          for (int i = 0; i < 19; i++) {
-               buckets[i] = new SortableLinkedList();
+          for (int i = 0; i < 19; i++) buckets[i] = new SortableLinkedList();
+          for (int i = 0; i < data.size(); i++) {
+               passes = Math.max(passes, length(data.get(0)));
+               data.add(data.remove(0));
           }
-          int c, bucket;
-          while (cont) {
-               cont = false;
-               while (data.size()>0) {
-                    c = data.remove(0);
-                    buckets[nth(c, digit)+9].add(c);
-                    if (length(c) > digit+1) cont=true;
-               }
+          for (int digit = 0; digit < passes; digit++) {
+               while (data.size()>0) buckets[nth(data.get(0), digit)+9].add(data.remove(0));
                merge(data, buckets);
-               digit++;
           }
      }
 
